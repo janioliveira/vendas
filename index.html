@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Virtual</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilo básico */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #555;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+        }
+
+        nav ul li a:hover {
+            background-color: #777;
+        }
+
+        section {
+            padding: 20px;
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* Estilo dos produtos e do carrinho */
+        .produto {
+            display: inline-block;
+            margin: 20px;
+            text-align: center;
+        }
+
+        .produto img {
+            width: 150px;
+            height: 150px;
+        }
+
+        #lista-carrinho li {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        /* Estilo do botão do WhatsApp */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Loja Virtual</h1>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="mostrarSeção('inicio')">Início</a></li>
+                <li><a href="#" onclick="mostrarSeção('produtos')">Produtos</a></li>
+                <li><a href="#" onclick="mostrarSeção('carrinho')">Carrinho</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Seção Início -->
+        <section id="inicio" class="active">
+            <h2>Bem-vindo à nossa Loja Virtual de produtos eletronicos!</h2>
+            <p>Confira nossos produtos incríveis e adicione ao seu carrinho.</p>
+            <img src="https://fly.metroimg.com/upload/q_85,w_700/https://uploads.metroimg.com/wp-content/uploads/2021/06/27130409/terca-tech.jpg" alt="Imagem de boas-vindas" style="max-width: 100%; height: center;">
+        </section>
+
+        <!-- Seção Produtos -->
+        <section id="produtos">
+            <h2>Nossos Produtos</h2>
+            <div class="produto" id="Alexa">
+                <img src="https://m.media-amazon.com/images/I/51lUym-OXcL._SR290,290_.jpg" alt="Alexa">
+                <h3>Alexa</h3>
+                <p>Preço: R$299,00</p>
+                <button class="adicionar-carrinho" data-id="1">Adicionar ao Carrinho</button>
+            </div>
+
+            <div class="produto" id="produto2">
+                <img src="https://cdn.awsli.com.br/600x1000/2709/2709834/produto/257255618/media_player_fire_tv_stick_lite_2ger_com_alexa_b091g767yb_-_amazon_04-pejzaa90yl.jpg" alt="Produto 2">
+                <h3> Fire Stick Lite 2Ger</h3>
+                <p>Preço: R$180,00</p>
+                <button class="adicionar-carrinho" data-id="2">Adicionar ao Carrinho</button>
+            </div>
+
+            <div class="produto" id="produto1">
+                <img src="https://m.media-amazon.com/images/I/61uOOR4-BZL._AC_SX679_.jpg" alt="Fone de ouvido">
+                <h3>Fone De Ouvido Tranya Nova com <p>Cancelamento De Ruído(ANC)</p></h3>
+                <p>Preço: R$240,00</p>
+                <button class="adicionar-carrinho" data-id="3">Adicionar ao Carrinho</button>
+            </div>
+
+            <div class="produto" id="produto4">
+                <img src="https://m.media-amazon.com/images/I/51T-6cdhyaL.AC_SX500.jpg" alt="Impressora">
+                <h3>Epson EcoTank L3250 - Multifuncional</h3>
+                <p>Preço: R$1.000,00</p>
+                <button class="adicionar-carrinho" data-id="4">Adicionar ao Carrinho</button>
+            </div>
+        </section>
+
+        <!-- Seção Carrinho -->
+        <section id="carrinho">
+            <h2>Carrinho de Compras</h2>
+            <ul id="lista-carrinho"></ul>
+            <p>Total: R$ <span id="total">0.00</span></p>
+        </section>
+    </main>
+
+    <!-- Botão do WhatsApp -->
+    <a href="https://wa.me/5598988090386" target="_blank">
+        <button class="whatsapp-button"> Não achou o que você procura? <p>
+            fale conosco!
+        </p></button>
+    </a>
+
+    <script>
+        // Função para alternar entre as seções
+        function mostrarSeção(seção) {
+            var secoes = document.querySelectorAll('section');
+            secoes.forEach(function (secao) {
+                secao.classList.remove('active');
+            });
+            document.getElementById(seção).classList.add('active');
+        }
+
+        // Lógica do carrinho
+        let carrinho = [];
+        let total = 0;
+
+        // Adicionar produtos ao carrinho
+        document.querySelectorAll('.adicionar-carrinho').forEach(button => {
+            button.addEventListener('click', function () {
+                const produtoId = this.getAttribute('data-id');
+                const produtoNome = this.parentElement.querySelector('h3').innerText;
+                const produtoPreco = parseFloat(this.parentElement.querySelector('p').innerText.replace('Preço: R$', '').replace(',', '.'));
+
+                carrinho.push({ id: produtoId, nome: produtoNome, preco: produtoPreco });
+
+                atualizarCarrinho();
+            });
+        });
+
+        // Atualizar o carrinho na página
+        function atualizarCarrinho() {
+            const listaCarrinho = document.getElementById('lista-carrinho');
+            listaCarrinho.innerHTML = '';
+            total = 0;
+
+            carrinho.forEach((produto, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${produto.nome} - R$${produto.preco.toFixed(2)} 
+                                <button onclick="removerDoCarrinho(${index})">Remover</button>`;
+                listaCarrinho.appendChild(li);
+                total += produto.preco;
+            });
+
+            document.getElementById('total').innerText = total.toFixed(2);
+        }
+
+        // Função para remover produto do carrinho
+        function removerDoCarrinho(index) {
+            carrinho.splice(index, 1); // Remove o produto do array
+            atualizarCarrinho(); // Atualiza a exibição do carrinho
+        }
+    </script>
+</body>
+
+</html>
